@@ -1,0 +1,86 @@
+Alright—here’s the spec, clean and ready to build.
+
+# Decide FSM Type + Specification (1011 Detector)
+
+## Chosen Type
+
+**Mealy FSM**, **overlapping allowed**.
+Rationale: fewer states, 0-cycle latency (asserts on the same clock that the last `1` arrives), simpler to meet your timeline.
+
+## Interface & Timing
+
+* `clk`: rising-edge clock
+* `rst`: active-high **synchronous** reset
+* `din`: serial input bit
+* `det`: 1-cycle pulse when the pattern **1011** is seen (same cycle as final `1`)
+* Sampling on `posedge clk`. `det` is registered (no combinational glitches).
+
+## States (encoding up to you; shown as symbols)
+
+* **S0**: no partial match
+* **S1**: last bit matched `1`
+* **S2**: last two bits matched `10`
+* **S3**: last three bits matched `101`
+
+## Transition Function (overlap enabled)
+
+* **S0**
+
+  * `din=0` → S0
+  * `din=1` → S1
+* **S1** (have `1`)
+
+  * `din=0` → S2   (seen `10`)
+  * `din=1` → S1   (still just `1` as suffix)
+* **S2** (have `10`)
+
+  * `din=0` → S0   (suffix `0`)
+  * `din=1` → S3   (seen `101`)
+* **S3** (have `101`)
+
+  * `din=0` → S2   (suffix `10`)
+  * `din=1` → **S1** and **det=1** this cycle (suffix `1` supports overlap)
+
+## Output Function (Mealy)
+
+* `det = 1` **iff** `(state == S3) && (din == 1)` at the sampling edge.
+* Otherwise `det = 0`.
+
+## Reset Behavior
+
+* On `rst=1`: `state <= S0`, `det <= 0`.
+
+## Overlap Examples
+
+* Input: `1 0 1 1` → detect at 4th bit.
+* Input: `1 0 1 1 0 1 1` (`1011011`) → detect at bit 4 **and** bit 7 (overlapping).
+* Input: `1 1 0 1 1` → detect at bit 5 (handles repeated `1`s correctly).
+
+## ASCII State Diagram (quick view)
+
+```
+S0 --1--> S1 --0--> S2 --1--> S3 --1/det=1--> S1
+ |         ^        |         \--0--> S2
+ \--0-----/         \--0--> S0
+```
+
+## Notes for RTL
+
+* Use enumerated `typedef enum logic [1:0] {S0,S1,S2,S3}`.
+* Two always blocks:
+
+  * `always_ff @(posedge clk)` for state and `det` register.
+  * `always_comb` for next-state and `det_next` (or compute det condition and register it).
+* Keep `det` as a one-cycle registered pulse derived from `(state==S3 && din)`.
+
+---
+
+### (Optional) Moore Variant (if you switch later)
+
+* Same states; **det=1 when entering a dedicated detect state or when in S4** (you’d add an S4 or reuse S3 and assert on next cycle).
+* **Latency:** 1 cycle after final `1`.
+* **Overlap:** Next state after detect goes to S1.
+
+---
+
+If this spec works for you, I’ll draft the RTL exactly to this (Mealy, overlapping, sync reset) next.

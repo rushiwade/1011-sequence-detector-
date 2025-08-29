@@ -1,0 +1,95 @@
+# Reading pref.tcl
+# //  Questa Intel Starter FPGA Edition-64
+# //  Version 2024.3 win64 Sep 10 2024
+# //
+# // Unpublished work. Copyright 2024 Siemens
+# //
+# // This material contains trade secrets or otherwise confidential information
+# // owned by Siemens Industry Software Inc. or its affiliates (collectively,
+# // "SISW"), or its licensors. Access to and use of this information is strictly
+# // limited as set forth in the Customer's applicable agreements with SISW.
+# //
+# // This material may not be copied, distributed, or otherwise disclosed outside
+# // of the Customer's facilities without the express written permission of SISW,
+# // and may not be used in any way not expressly authorized by SISW.
+# //
+# do 1011sequencedetector_run_msim_rtl_verilog.do
+# if {[file exists rtl_work]} {
+# 	vdel -lib rtl_work -all
+# }
+# vlib rtl_work
+# vmap work rtl_work
+# Questa Intel Starter FPGA Edition-64 vmap 2024.3 Lib Mapping Utility 2024.09 Sep 10 2024
+# vmap work rtl_work 
+# Copying c:/intelfpga_lite/24.1std/questa_fse/win64/../modelsim.ini to modelsim.ini
+# Modifying modelsim.ini
+# 
+# vlog -sv -work work +incdir+C:/Users/1rush/AppData/Local/quartus {C:/Users/1rush/AppData/Local/quartus/seq1011_mealy_overlap.sv}
+# Questa Intel Starter FPGA Edition-64 vlog 2024.3 Compiler 2024.09 Sep 10 2024
+# Start time: 02:41:27 on Aug 30,2025
+# vlog -reportprogress 300 -sv -work work "+incdir+C:/Users/1rush/AppData/Local/quartus" C:/Users/1rush/AppData/Local/quartus/seq1011_mealy_overlap.sv 
+# -- Compiling module seq1011_mealy_overlap
+# 
+# Top level modules:
+# 	seq1011_mealy_overlap
+# End time: 02:41:27 on Aug 30,2025, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# 
+cd C:/Users/1rush/AppData/Local/quartus
+# reading modelsim.ini
+vlib work
+# ** Warning: (vlib-34) Library already exists at "work".
+# Errors: 0, Warnings: 1
+vlog -sv seq1011_mealy_overlap.sv tb_seq1011_directed.sv
+# Questa Intel Starter FPGA Edition-64 vlog 2024.3 Compiler 2024.09 Sep 10 2024
+# Start time: 02:42:42 on Aug 30,2025
+# vlog -reportprogress 300 -sv seq1011_mealy_overlap.sv tb_seq1011_directed.sv 
+# -- Compiling module seq1011_mealy_overlap
+# -- Compiling module tb_seq1011_directed
+# 
+# Top level modules:
+# 	tb_seq1011_directed
+# End time: 02:42:42 on Aug 30,2025, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+vsim -voptargs=+acc tb_seq1011_directed
+# vsim -voptargs="+acc" tb_seq1011_directed 
+# Start time: 02:42:42 on Aug 30,2025
+# ** Note: (vsim-3812) Design is being optimized...
+# ** Warning: (vopt-10908) Some optimizations are turned off because the +acc switch is in effect.
+# ** Note: (vopt-143) Recognized 1 FSM in module "seq1011_mealy_overlap(fast)".
+# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=0, Warnings=1.
+# Loading sv_std.std
+# Loading work.tb_seq1011_directed(fast)
+# Loading work.seq1011_mealy_overlap(fast)
+run -all
+# [TB] Directed tests completed @385000
+# ** Note: $finish    : tb_seq1011_directed.sv(98)
+#    Time: 385 ns  Iteration: 1  Instance: /tb_seq1011_directed
+# 1
+# Break in Module tb_seq1011_directed at tb_seq1011_directed.sv line 98
+
+# if sim is already loaded:
+restart -f
+view wave
+# Closing VCD file "tb_seq1011_directed.vcd"
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Note: (vsim-8009) Loading existing optimized design _opt2
+# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=0, Warnings=1.
+# Loading work.tb_seq1011_directed(fast)
+# Loading work.seq1011_mealy_overlap(fast)
+# .main_pane.wave.interior.cs.body.pw.wf
+add wave -r /*
+run -all
+# ** Warning: (vsim-WLF-5000) WLF file currently in use: vsim.wlf
+#           File in use by: 1rush  Hostname: RUSHMACHINE  ProcessID: 19860
+#           Attempting to use alternate WLF file "./wlft42sqnz".
+# ** Warning: (vsim-WLF-5001) Could not open WLF file: vsim.wlf
+#           Using alternate file: ./wlft42sqnz
+# [TB] Directed tests completed @385000
+# ** Note: $finish    : tb_seq1011_directed.sv(98)
+#    Time: 385 ns  Iteration: 1  Instance: /tb_seq1011_directed
+# 1
+# Break in Module tb_seq1011_directed at tb_seq1011_directed.sv line 98
+
+
+
